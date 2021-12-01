@@ -16,15 +16,33 @@ function fgetsGenerator($file)
 
 $depthGenerator = fgetsGenerator(__DIR__ . DIRECTORY_SEPARATOR . "day-1-input.txt");
 
-$lastDepth = null;
+$trailingDepths = [];
+$lastTrailingDepth = null;
+
 $depthIncreases = 0;
 
+$measurementWindow = 3;
+
 foreach ($depthGenerator as $currentDepth) {
-    if (!is_null($lastDepth) && $currentDepth > $lastDepth) {
+    $trailingDepths[] = $currentDepth;
+
+    if (!is_null($lastTrailingDepth)) {
+        array_shift($trailingDepths);
+    }
+
+    if (sizeof($trailingDepths) != $measurementWindow) {
+        continue;
+    }
+
+    $trailingDepth = array_sum($trailingDepths);
+
+    if (!is_null($lastTrailingDepth) 
+        && $trailingDepth > $lastTrailingDepth
+    ) {
         $depthIncreases++;
     }
 
-    $lastDepth = $currentDepth;
+    $lastTrailingDepth = $trailingDepth;
 }
 
 echo $depthIncreases;
