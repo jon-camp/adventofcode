@@ -6,6 +6,7 @@ $courseGenerator = fgetsGenerator(__DIR__ . DIRECTORY_SEPARATOR . "day-2-input.t
 
 $horizontal = 0;
 $depth = 0;
+$aim = 0;
 
 foreach ($courseGenerator as $movement) {
     list($direction, $increment) = explode(" ", trim($movement));
@@ -13,12 +14,13 @@ foreach ($courseGenerator as $movement) {
     switch ($direction) {
         case "forward":
             $horizontal += $increment;
+            $depth += ($aim * $increment);
             break;
         case "up": 
-            $depth -= $increment;
+            $aim -= $increment;
             break;
         case "down":
-            $depth += $increment;
+            $aim += $increment;
             break;
         default:
             throw new \ErrorException();            
