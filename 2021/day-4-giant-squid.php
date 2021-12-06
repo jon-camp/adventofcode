@@ -61,9 +61,6 @@ foreach ($input as $line) {
 
 }
 
-print_r($boards);
-
-
 $calledNumbers = explode(",", $calledNumbers);
 
 $calledSoFar = [];
@@ -75,30 +72,35 @@ foreach ($calledNumbers as $calledNumber) {
         continue;
     }
 
-    foreach ($boards as $board) {
+    foreach ($boards as $i => $board) {
 
         foreach ($board['col'] as $col) {
             $diff = array_diff($col, $calledSoFar);
             if (empty($diff)) {
 
-
-
-                declareWinner($board, $calledSoFar, $calledNumber);
-                break 3;
+                if (sizeof($boards) == 1) {
+                    declareWinner($board, $calledSoFar, $calledNumber);
+                    break 3;
+                } else {
+                    unset($boards[$i]);
+                    continue 2;
+                }
             }
         }
 
         foreach ($board['row'] as $row) {
             $diff = array_diff($row, $calledSoFar);
             if (empty($diff)) {
-                declareWinner($board, $calledSoFar, $calledNumber);
-                break 3;
+                if (sizeof($boards) == 1) {
+                    declareWinner($board, $calledSoFar, $calledNumber);
+                    break 3;
+                } else {
+                    unset($boards[$i]);
+                    continue 2;
+                }
             }
         }        
-
-
     }
-
 }
 
 function declareWinner(array $board, array $calledSoFar, int $justCalled) {
