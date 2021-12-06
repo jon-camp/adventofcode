@@ -64,40 +64,32 @@ foreach ($parsedVents as $parsedVent) {
     $end = $parsedVent[1];
 
     if ($start['x'] == $end['x']) {
-        $x = $start['x'];
-        for ($y = min($start['y'], $end['y']); $y <= max($start['y'], $end['y']); $y++) {
-            $grid[$x][$y]++;
-        }
-    } else if ($start['y'] == $end['y']) {
-        $y = $start['y'];
-        for ($x = min($start['x'], $end['x']); $x <= max($start['x'], $end['x']); $x++) {
-            $grid[$x][$y]++;
-        }        
-    } else {        
+        $xChange = 0;
+    } else if ($end['x'] < $start['x']) {
+        $xChange = -1;
+    } else {
         $xChange = 1;
-        if ($end['x'] < $start['x']) {
-            $xChange = -1;
-        }
-
-        $yChange = 1;
-        if ($end['y'] < $start['y']) {
-            $yChange = -1;
-        }        
-
-        $currentX = $start['x'];
-        $currentY = $start['y'];
-
-        while ($currentX != $end['x']) {
-            $grid[$currentX][$currentY]++;
-
-            $currentX += $xChange;
-            $currentY += $yChange;
-
-        }
-           
-        $grid[$end['x']][$end['y']]++;
-        
     }
+    
+    if ($start['y'] == $end['y']) {
+        $yChange = 0;
+    } else if ($end['y'] < $start['y']) {
+        $yChange = -1;
+    } else {
+        $yChange = 1;
+    }
+
+    $currentX = $start['x'];
+    $currentY = $start['y'];
+
+    while ($currentX != $end['x'] || $currentY != $end['y']) {
+        $grid[$currentX][$currentY]++;
+
+        $currentX += $xChange;
+        $currentY += $yChange;
+    }
+        
+    $grid[$end['x']][$end['y']]++;
 }
 
 $dangerousAreas = 0;
