@@ -22,8 +22,8 @@ foreach ($fuelByPositon as $targetPositon => $fuel) {
     $fuel = 0;
 
     foreach ($crabsByPosition as $fromPosition => $crabs) {
-
-        $fuel += abs($targetPositon - $fromPosition) * $crabs;
+        $distance = abs($targetPositon - $fromPosition);
+        $fuel += sumOfFirstNIntegers($distance)  * $crabs;
     }
 
     $fuelByPositon[$targetPositon] = $fuel;
@@ -33,3 +33,11 @@ print_r($fuelByPositon);
 $minFuel = min($fuelByPositon);
 
 print "Min: {$minFuel} at Position: " . array_search($minFuel, $fuelByPositon) . PHP_EOL;
+
+/**
+ * @see https://www.cuemath.com/sum-of-integers-formula/
+ */
+function sumOfFirstNIntegers($n)
+{    
+    return ($n * ($n + 1)) / 2;
+}
