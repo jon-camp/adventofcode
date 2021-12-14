@@ -25,6 +25,24 @@ $lines = explode(PHP_EOL, $input);
 $template = array_shift($lines);
 $template = trim($template);
 
+$existingPairs = [];
+
+
+function assertPair($thisPair, &$existingPairs) {
+
+    if (!array_key_exists($thisPair, $existingPairs)) {
+        $existingPairs[$thisPair] = 0;
+    }
+
+}
+
+for ($i = 0; $i < strlen($template) - 1; $i++) {
+    $thisPair = $template[$i] . $template[$i+1];
+    assertPair($thisPair, $existingPairs);
+
+    $existingPairs[$thisPair]++;
+}
+
 foreach ($lines as $line) {
     $line = trim($line);
 
@@ -39,35 +57,41 @@ foreach ($lines as $line) {
     $pairs["{$a}{$b}"] = $c;
 }
 
-//print "Template: " . $template . PHP_EOL;
 
-$steps = 10;
+$steps = 40;
 
 for ($step = 0; $step < $steps; $step++) {
 
-    $newString = "";
+    $clonedPairs = $existingPairs;
 
-    for ($i = 0; $i < strlen($template) - 1; $i++) {
-        $pair = $template[$i] . $template[$i+1];
+    foreach ($pairs as $pair => $add) {
 
-
-        $newString .= $pair[0];
-
-        if (!array_key_exists($pair, $pairs)) {        
+        if (!array_key_exists($pair, $existingPairs)) {
             continue;
         }
 
+        $existing = $existingPairs[$pair];
 
-        $newString .= $pairs[$pair];
+        $leftPair = $pair[0] . $add;
+        $rightPair = $add . $pair[1];
+
+        assertPair($leftPair, $clonedPairs);
+        assertPair($rightPair, $clonedPairs);
+
+        $clonedPairs[$leftPair] += $existing;
+        $clonedPairs[$rightPair] += $existing;
+        $clonedPairs[$pair] -= $existing;
     }
 
-    $newString .= $template[-1];
-
-    //print "After step {$step}:" . $newString . PHP_EOL;
-
-    $template = $newString;
+    $existingPairs = $clonedPairs;
 }
 
-$counts = count_chars($template, 1);
+$letters = [];
 
-print max($counts) - min($counts);
+foreach ($existingPairs as $pair => $count) {
+    $letters[$pair[0]] += $count;
+    $letters[$pair[1]] += $count;
+}
+
+print ceil((max($letters) - min($letters)) / 2);
+
