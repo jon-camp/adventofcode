@@ -16,19 +16,39 @@ $input = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . "day-15-input.txt");
 
 $map = [];
 $lines = explode(PHP_EOL, $input);
-foreach ($lines as $y => $line) {
-    $line = trim($line);
 
-    if (empty($line)) {
-        continue;
+for ($a = 0; $a < 5; $a++) {
+
+    foreach ($lines as $y => $line) {
+        $line = trim($line);
+
+        if (empty($line)) {
+            continue;
+        }
+
+        $pieces = str_split($line);
+        $thisBar = [];
+
+
+        for ($b = 0; $b < 5; $b++) {
+            foreach ($pieces as $piece) {
+                $chitons = $piece + $a + $b;
+
+                while ($chitons > 9) {
+                    $chitons -= 9;
+                }
+
+                $thisBar[] = $chitons;
+            }            
+        }
+
+        $maxX = sizeof($thisBar) - 1;
+
+        $map[] = $thisBar;
     }
-
-    $pieces = str_split($line);
-    $maxY = $y;
-    $maxX = sizeof($pieces) - 1;
-
-    $map[] = $pieces;
 }
+
+$maxY = sizeof($map) - 1;
 
 $grid = new BlackScorp\Astar\Grid($map);
 
@@ -41,7 +61,7 @@ $nodes = $astar->search($startPosition, $endPosition);
 $cost = 0 - $map[0][0];
 
 if (count($nodes) === 0) {
-   echo "Path not found";
+    echo "Path not found";
 } else {
     foreach($nodes as $node){
         $cost += $map[$node->getY()][$node->getX()];
